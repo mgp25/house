@@ -211,8 +211,8 @@ def setDevice(id):
     house_global.device = house_global.device_manager.get_device(id)
     print(stylize("[+]Changing Device with id {}".format(id), MightBeImportant))
     try:
-        socketio.emit('show_selected_device',
-                      {'device_list': json.dumps(house_global.device_dict), 'selection': str(house_global.device.id)},
+        socketio.emit('update_device',
+                      {'data': cgi.escape(str(house_global.device))},
                       namespace='/eventBus')
     except Exception as e:
         raise e
@@ -220,6 +220,8 @@ def setDevice(id):
 
 def getDevice():
     try:
+        if house_global.device != None:
+            return
         print(stylize("[+] Trying to get device..", Info))
         house_global.device_dict = {}
         house_global.device_manager = frida.get_device_manager()
